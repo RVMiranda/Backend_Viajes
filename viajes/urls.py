@@ -1,7 +1,25 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from . import views
+from rest_framework.routers import DefaultRouter
+from .views import (
+    RolViewSet, TipoTransporteViewSet, UsuarioViewSet, DestinoViewSet,
+    VehiculoViewSet, EstadoViajeViewSet, PasajeroViewSet, MetodoPagoViewSet,
+    EstatusPasajeViewSet, ViajeViewSet, PasajeViewSet
+)
+
+router = DefaultRouter()
+router.register(r'roles', RolViewSet)
+router.register(r'tipos-transporte', TipoTransporteViewSet)
+router.register(r'usuarios', UsuarioViewSet)
+router.register(r'destinos', DestinoViewSet)
+router.register(r'vehiculos', VehiculoViewSet)
+router.register(r'estados-viaje', EstadoViajeViewSet)
+router.register(r'pasajeros', PasajeroViewSet)
+router.register(r'metodos-pago', MetodoPagoViewSet)
+router.register(r'estatus-pasaje', EstatusPasajeViewSet)
+router.register(r'viajes', ViajeViewSet)
+router.register(r'pasajes', PasajeViewSet)
 
 urlpatterns = [
-
+    path('', include(router.urls)),
 ]
