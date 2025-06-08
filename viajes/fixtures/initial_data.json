@@ -1,0 +1,292 @@
+[
+    {
+        "model": "viajes.rol",
+        "pk": 1,
+        "fields": {
+            "nombre": "Administrador"
+        }
+    },
+    {
+        "model": "viajes.rol",
+        "pk": 2,
+        "fields": {
+            "nombre": "Agente"
+        }
+    },
+
+    {
+        "model": "viajes.tipotransporte",
+        "pk": 1,
+        "fields": {
+            "nombre": "Bus",
+            "descripcion": "Autobús de media distancia"
+        }
+    },
+    {
+        "model": "viajes.tipotransporte",
+        "pk": 2,
+        "fields": {
+            "nombre": "Avión",
+            "descripcion": "Vuelo comercial"
+        }
+    },
+
+    {
+        "model": "viajes.usuario",
+        "pk": 1,
+        "fields": {
+            "nombre_usuario": "Ingrid Mendoza",
+            "contrasena": "1234",
+            "rol": 1,
+            "fecha_creacion": "2025-06-01T10:00:00Z",
+            "usuario_creacion": null,
+            "fecha_actualizacion": "2025-06-01T10:00:00Z",
+            "usuario_actualizacion": null,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.usuario",
+        "pk": 2,
+        "fields": {
+            "nombre_usuario": "Eduardo Perez",
+            "contrasena": "abcd",
+            "rol": 2,
+            "fecha_creacion": "2025-06-01T11:00:00Z",
+            "usuario_creacion": null,
+            "fecha_actualizacion": "2025-06-01T11:00:00Z",
+            "usuario_actualizacion": null,
+            "estado": true
+        }
+    },
+
+    {
+        "model": "viajes.destino",
+        "pk": 1,
+        "fields": {
+            "ciudad": "Guadalajara",
+            "pais": "México",
+            "codigo_terminal": "GDL",
+            "fecha_creacion": "2025-06-02T09:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-02T09:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.destino",
+        "pk": 2,
+        "fields": {
+            "ciudad": "Ciudad de México",
+            "pais": "México",
+            "codigo_terminal": "CDMX",
+            "fecha_creacion": "2025-06-02T10:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-02T10:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+
+    {
+        "model": "viajes.vehiculo",
+        "pk": 1,
+        "fields": {
+            "tipo_transporte": 1,
+            "capacidad_asientos": 40,
+            "matricula": "ABC-123",
+            "fecha_creacion": "2025-06-03T08:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-03T08:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.vehiculo",
+        "pk": 2,
+        "fields": {
+            "tipo_transporte": 2,
+            "capacidad_asientos": 180,
+            "matricula": "XYZ-789",
+            "fecha_creacion": "2025-06-03T09:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-03T09:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+
+    {
+        "model": "viajes.estadoviaje",
+        "pk": 1,
+        "fields": {
+            "descripcion": "Programado"
+        }
+    },
+    {
+        "model": "viajes.estadoviaje",
+        "pk": 2,
+        "fields": {
+            "descripcion": "En curso"
+        }
+    },
+
+    {
+        "model": "viajes.pasajero",
+        "pk": 1,
+        "fields": {
+            "nombre_completo": "Carlos López",
+            "documento_identidad": "ABC123456",
+            "correo_electronico": "carlos@example.com",
+            "telefono": "+5215512345678",
+            "fecha_creacion": "2025-06-04T07:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-04T07:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.pasajero",
+        "pk": 2,
+        "fields": {
+            "nombre_completo": "Ana Pérez",
+            "documento_identidad": "XYZ987654",
+            "correo_electronico": "ana@example.com",
+            "telefono": "+5215598765432",
+            "fecha_creacion": "2025-06-04T08:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-04T08:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+
+    {
+        "model": "viajes.metodopago",
+        "pk": 1,
+        "fields": {
+            "descripcion": "Efectivo",
+            "fecha_creacion": "2025-06-05T06:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-05T06:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.metodopago",
+        "pk": 2,
+        "fields": {
+            "descripcion": "Tarjeta de crédito",
+            "fecha_creacion": "2025-06-05T07:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-05T07:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+
+    {
+        "model": "viajes.estatuspasaje",
+        "pk": 1,
+        "fields": {
+            "descripcion": "Pendiente",
+            "fecha_creacion": "2025-06-06T05:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-06T05:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.estatuspasaje",
+        "pk": 2,
+        "fields": {
+            "descripcion": "Confirmado",
+            "fecha_creacion": "2025-06-06T06:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-06T06:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+
+    {
+        "model": "viajes.viaje",
+        "pk": 1,
+        "fields": {
+            "origen": 1,
+            "destino": 2,
+            "vehiculo": 1,
+            "fecha_hora_salida": "2025-07-01T08:00:00Z",
+            "fecha_hora_llegada": "2025-07-01T12:00:00Z",
+            "precio_base": "500.00",
+            "estado_viaje": 1,
+            "fecha_creacion": "2025-06-07T04:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-07T04:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.viaje",
+        "pk": 2,
+        "fields": {
+            "origen": 2,
+            "destino": 1,
+            "vehiculo": 2,
+            "fecha_hora_salida": "2025-07-02T09:00:00Z",
+            "fecha_hora_llegada": "2025-07-02T13:30:00Z",
+            "precio_base": "750.00",
+            "estado_viaje": 2,
+            "fecha_creacion": "2025-06-07T05:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-07T05:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+
+    {
+        "model": "viajes.pasaje",
+        "pk": 1,
+        "fields": {
+            "viaje": 1,
+            "pasajero": 1,
+            "numero_asiento": "1A",
+            "precio_pagado": "500.00",
+            "estatus_pasaje": 2,
+            "metodo_pago": 1,
+            "fecha_compra": "2025-06-07T06:00:00Z",
+            "usuario_compra": 1,
+            "fecha_creacion": "2025-06-07T06:00:00Z",
+            "usuario_creacion": 1,
+            "fecha_actualizacion": "2025-06-07T06:00:00Z",
+            "usuario_actualizacion": 1,
+            "estado": true
+        }
+    },
+    {
+        "model": "viajes.pasaje",
+        "pk": 2,
+        "fields": {
+            "viaje": 2,
+            "pasajero": 2,
+            "numero_asiento": "2B",
+            "precio_pagado": "750.00",
+            "estatus_pasaje": 1,
+            "metodo_pago": 2,
+            "fecha_compra": "2025-06-07T07:00:00Z",
+            "usuario_compra": 2,
+            "fecha_creacion": "2025-06-07T07:00:00Z",
+            "usuario_creacion": 2,
+            "fecha_actualizacion": "2025-06-07T07:00:00Z",
+            "usuario_actualizacion": 2,
+            "estado": true
+        }
+    }
+]

@@ -1,4 +1,12 @@
 from django.db import models
+#para cargar los datos basicos de la base de datos:
+# docker-compose exec web python manage.py loaddata initial_data.json
+
+#para crear alguna migracion:
+# docker-compose exec web python manage.py makemigrations viajes
+
+# para aplicar las migraciones:
+# docker-compose exec web python manage.py migrate viajes
 
 # Create your models here.
 class Rol(models.Model):
