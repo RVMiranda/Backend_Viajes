@@ -1,17 +1,22 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 import uuid
 from django.utils import timezone
 from datetime import timedelta
+# imports de archivos del proyecto
 from .models import Rol, TipoTransporte, Usuario, Destino, Vehiculo, EstadoViaje, Pasajero, MetodoPago, EstatusPasaje, Viaje, Pasaje, AuthToken
 from .serializers import (
     RolSerializer, TipoTransporteSerializer, UsuarioSerializer, DestinoSerializer,
     VehiculoSerializer, EstadoViajeSerializer, PasajeroSerializer, MetodoPagoSerializer,
     EstatusPasajeSerializer, ViajeSerializer, PasajeSerializer
 )
+from .authentication import TokenAuthentication
+from .permissions import IsAdminRole
+from .services.viaje_service import ViajeService
+from .utils.exceptions import BusinessError
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -73,6 +78,69 @@ class EstatusPasajeViewSet(viewsets.ModelViewSet):
 class ViajeViewSet(viewsets.ModelViewSet):
     queryset = Viaje.objects.all()
     serializer_class = ViajeSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAdminRole]
+    service = ViajeService()
+
+    def list(self, request):
+        viajes = self.service.listar_activos()
+        serializer = ViajeSerializer(viajes, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        viaje = self.service.listar_activos().filter(pk=pk).first()
+        if not viaje:
+            return Response({'detail': 'No encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ViajeSerializer(viaje)
+        return Response(serializer.data)
+    
+    def create(self, request):
+        serializer = ViajeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = serializer.validated_data
+        try:
+            viaje = self.service.crear_viaje(data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except BusinessError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        out = ViajeSerializer(viaje)
+        return Response(out.data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, pk=None):
+        instance = self.service.listar_activos().filter(pk=pk).first()
+        if not instance:
+            return Response({'detail': 'No encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ViajeSerializer(instance, data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        datos = serializer.validated_data
+        try:
+            viaje = self.service.actualizar_viaje(instance, datos)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(ViajeSerializer(viaje).data)
+    
+    def destroy(self, request, pk=None):
+        instance = self.service.listar_activos().filter(pk=pk).first()
+        if not instance:
+            return Response({'detail': 'No encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def partial_update(self, request, pk=None):
+        instance = self.service.listar_activos().filter(pk=pk).first()
+        if not instance:
+            return Response({'detail': 'No encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ViajeSerializer(instance, data=request.data, partial=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        datos = serializer.validated_data
+        try:
+            viaje = self.service.actualizar_viaje(instance, datos, partial=True)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(ViajeSerializer(viaje).data)
 
 class PasajeViewSet(viewsets.ModelViewSet):
     queryset = Pasaje.objects.all()

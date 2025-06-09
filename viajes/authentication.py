@@ -1,5 +1,7 @@
 from rest_framework.authentication import BaseAuthentication
 from rest_framework import exceptions
+from django.utils import timezone        
+from .models import AuthToken
 from .models import AuthToken
 
 class TokenAuthentication(BaseAuthentication):

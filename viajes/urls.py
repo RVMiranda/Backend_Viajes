@@ -18,7 +18,7 @@ router.register(r'estados-viaje', EstadoViajeViewSet)
 router.register(r'pasajeros', PasajeroViewSet)
 router.register(r'metodos-pago', MetodoPagoViewSet)
 router.register(r'estatus-pasaje', EstatusPasajeViewSet)
-router.register(r'viajes', ViajeViewSet)
+router.register(r'viajes', ViajeViewSet, basename='viaje')
 router.register(r'pasajes', PasajeViewSet)
 
 urlpatterns = [

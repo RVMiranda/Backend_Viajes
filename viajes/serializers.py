@@ -49,7 +49,16 @@ class EstatusPasajeSerializer(serializers.ModelSerializer):
 class ViajeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Viaje
-        fields = '__all__'
+        fields = [
+            'id',
+            'origen',
+            'destino',
+            'vehiculo',
+            'fecha_hora_salida',
+            'fecha_hora_llegada',
+            'precio_base',
+            'estado_viaje',
+        ]
 
 class PasajeSerializer(serializers.ModelSerializer):
     class Meta:
