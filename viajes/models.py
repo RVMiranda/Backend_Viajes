@@ -1,4 +1,7 @@
 from django.db import models
+import uuid
+from django.utils import timezone
+from datetime import timedelta
 #para cargar los datos basicos de la base de datos:
 # docker-compose exec web python manage.py loaddata initial_data.json
 
@@ -242,3 +245,15 @@ class Pasaje(models.Model):
 
     def __str__(self):
         return f"Pasaje {self.id} - Asiento {self.numero_asiento}"
+
+def default_token_expiry():
+    return timezone.now() + timedelta(days=1)
+
+class AuthToken(models.Model):
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='auth_tokens')
+    token = models.CharField(max_length=40, unique=True, default=uuid.uuid4)
+    created = models.DateTimeField(auto_now_add=True)
+    expires = models.DateTimeField(default=default_token_expiry)
+
+    def __str__(self):
+        return f"{self.user.nombre_usuario} – {self.token}"

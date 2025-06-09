@@ -6,6 +6,7 @@ from .views import (
     VehiculoViewSet, EstadoViajeViewSet, PasajeroViewSet, MetodoPagoViewSet,
     EstatusPasajeViewSet, ViajeViewSet, PasajeViewSet
 )
+from .views import LoginView
 
 router = DefaultRouter()
 router.register(r'roles', RolViewSet)
@@ -22,4 +23,5 @@ router.register(r'pasajes', PasajeViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('login/', LoginView.as_view(), name='login'),
 ]

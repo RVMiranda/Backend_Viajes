@@ -1,11 +1,38 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Rol, TipoTransporte, Usuario, Destino, Vehiculo, EstadoViaje, Pasajero, MetodoPago, EstatusPasaje, Viaje, Pasaje
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+import uuid
+from django.utils import timezone
+from datetime import timedelta
+from .models import Rol, TipoTransporte, Usuario, Destino, Vehiculo, EstadoViaje, Pasajero, MetodoPago, EstatusPasaje, Viaje, Pasaje, AuthToken
 from .serializers import (
     RolSerializer, TipoTransporteSerializer, UsuarioSerializer, DestinoSerializer,
     VehiculoSerializer, EstadoViajeSerializer, PasajeroSerializer, MetodoPagoSerializer,
     EstatusPasajeSerializer, ViajeSerializer, PasajeSerializer
 )
+
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        user = request.data.get("nombre_usuario")
+        pwd  = request.data.get("contrasena")
+        try:
+            u = Usuario.objects.get(nombre_usuario=user, contrasena=pwd, estado=True)
+        except Usuario.DoesNotExist:
+            return Response({"detail": "Credenciales inválidas"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token_obj, created = AuthToken.objects.get_or_create(user=u,
+            defaults={"expires": timezone.now() + timedelta(days=1)}
+        )
+        if not created and token_obj.expires < timezone.now():
+            token_obj.token = uuid.uuid4().hex
+            token_obj.expires = timezone.now() + timedelta(days=1)
+            token_obj.save()
+
+        return Response({"token": token_obj.token})
 
 class RolViewSet(viewsets.ModelViewSet):
     queryset = Rol.objects.all()
