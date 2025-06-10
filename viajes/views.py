@@ -19,6 +19,7 @@ from .services.viaje_service import ViajeService
 from .utils.exceptions import BusinessError
 from .services.rol_service import RolService
 from .services.tipo_transporte_service import TipoTransporteService
+from .services.usuario_service import UsuarioService
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -113,6 +114,51 @@ class TipoTransporteViewSet(viewsets.ModelViewSet):
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes     = [IsAdminRole]
+    service = UsuarioService()
+
+    def retrieve(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            usuario = self.service.crear_usuario(serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(usuario).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            usuario = self.service.actualizar_usuario(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(usuario).data)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        try:
+            usuario = self.service.actualizar_usuario(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(usuario).data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.service.eliminar_usuario(instance)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DestinoViewSet(viewsets.ModelViewSet):
     queryset = Destino.objects.all()

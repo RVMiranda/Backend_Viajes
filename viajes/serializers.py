@@ -12,9 +12,23 @@ class TipoTransporteSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre','descripcion']
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    rol = RolSerializer(read_only=True)
+    rol_id = serializers.PrimaryKeyRelatedField(
+        queryset=Rol.objects.all(), source='rol', write_only=True
+    )
     class Meta:
         model = Usuario
-        fields = '__all__'
+        fields = [
+            'id',
+            'nombre_usuario',
+            'contrasena',
+            'rol',
+            'rol_id',
+            'fecha_creacion',
+            'fecha_actualizacion',
+            'estado',
+        ]
+        read_only_fields = ['rol','fecha_creacion', 'fecha_actualizacion']
 
 class DestinoSerializer(serializers.ModelSerializer):
     class Meta:
