@@ -23,6 +23,7 @@ from .services.usuario_service import UsuarioService
 from .services.destino_service import DestinoService
 from .services.vehiculo_service import VehiculoService
 from .services.estado_viaje_service import EstadoViajeService
+from .services.pasajero_service import PasajeroService
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -289,6 +290,46 @@ class EstadoViajeViewSet(viewsets.ModelViewSet):
 class PasajeroViewSet(viewsets.ModelViewSet):
     queryset = Pasajero.objects.all()
     serializer_class = PasajeroSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes     = [IsAdminRole]
+    service = PasajeroService()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            pasajero = self.service.crear_pasajero(serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(pasajero).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            pasajero = self.service.actualizar_pasajero(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(pasajero).data)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        try:
+            pasajero = self.service.actualizar_pasajero(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(pasajero).data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.service.eliminar_pasajero(instance)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class MetodoPagoViewSet(viewsets.ModelViewSet):
     queryset = MetodoPago.objects.all()

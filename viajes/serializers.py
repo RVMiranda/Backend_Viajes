@@ -66,7 +66,17 @@ class EstadoViajeSerializer(serializers.ModelSerializer):
 class PasajeroSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pasajero
-        fields = '__all__'
+        fields = [
+            'id',
+            'nombre_completo',
+            'documento_identidad',
+            'correo_electronico',
+            'telefono',
+            'fecha_creacion',
+            'fecha_actualizacion',
+            'estado',
+        ]
+        read_only_fields = ['fecha_creacion', 'fecha_actualizacion']
 
 class MetodoPagoSerializer(serializers.ModelSerializer):
     class Meta:
