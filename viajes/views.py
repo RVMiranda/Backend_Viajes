@@ -22,6 +22,7 @@ from .services.tipo_transporte_service import TipoTransporteService
 from .services.usuario_service import UsuarioService
 from .services.destino_service import DestinoService
 from .services.vehiculo_service import VehiculoService
+from .services.estado_viaje_service import EstadoViajeService
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -253,6 +254,37 @@ class VehiculoViewSet(viewsets.ModelViewSet):
 class EstadoViajeViewSet(viewsets.ModelViewSet):
     queryset = EstadoViaje.objects.all()
     serializer_class = EstadoViajeSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes     = [IsAdminRole]
+    service = EstadoViajeService()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            estado = self.service.crear_estado(serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(estado).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            estado = self.service.actualizar_estado(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(estado).data)
+
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.service.eliminar_estado(instance)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PasajeroViewSet(viewsets.ModelViewSet):
     queryset = Pasajero.objects.all()

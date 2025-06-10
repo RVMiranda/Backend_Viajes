@@ -14,7 +14,7 @@ router.register(r'tipos-transporte', TipoTransporteViewSet, basename='tipotransp
 router.register(r'usuarios', UsuarioViewSet, basename='usuario')
 router.register(r'destinos', DestinoViewSet, basename='destino')
 router.register(r'vehiculos', VehiculoViewSet, basename='vehiculo')
-router.register(r'estados-viaje', EstadoViajeViewSet)
+router.register(r'estados-viaje', EstadoViajeViewSet, basename='estadoviaje')
 router.register(r'pasajeros', PasajeroViewSet)
 router.register(r'metodos-pago', MetodoPagoViewSet)
 router.register(r'estatus-pasaje', EstatusPasajeViewSet)

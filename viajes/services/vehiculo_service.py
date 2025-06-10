@@ -2,7 +2,6 @@ from ..models import Vehiculo, Viaje
 from ..utils.exceptions import BusinessError
 
 class VehiculoService:
-    """Lógica de negocio para gestión de Vehículos."""
     def listar_todos(self):
         return Vehiculo.objects.filter(estado=True)
 
@@ -22,7 +21,6 @@ class VehiculoService:
         return instance
 
     def eliminar_vehiculo(self, instance):
-        # No permitir eliminar si hay viajes asociados
         if Viaje.objects.filter(vehiculo=instance).exists():
             raise BusinessError("No se puede eliminar el vehículo porque está asignado a uno o más viajes.")
         instance.delete()

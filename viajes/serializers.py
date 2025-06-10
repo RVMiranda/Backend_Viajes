@@ -61,7 +61,7 @@ class VehiculoSerializer(serializers.ModelSerializer):
 class EstadoViajeSerializer(serializers.ModelSerializer):
     class Meta:
         model = EstadoViaje
-        fields = '__all__'
+        fields = ['id', 'descripcion']
 
 class PasajeroSerializer(serializers.ModelSerializer):
     class Meta:
