@@ -17,7 +17,7 @@ router.register(r'vehiculos', VehiculoViewSet, basename='vehiculo')
 router.register(r'estados-viaje', EstadoViajeViewSet, basename='estadoviaje')
 router.register(r'pasajeros', PasajeroViewSet, basename='pasajero')
 router.register(r'metodos-pago', MetodoPagoViewSet, basename='metodopago')
-router.register(r'estatus-pasaje', EstatusPasajeViewSet)
+router.register(r'estatus-pasaje', EstatusPasajeViewSet, basename='estatuspasaje')
 router.register(r'viajes', ViajeViewSet, basename='viaje')
 router.register(r'pasajes', PasajeViewSet)
 
