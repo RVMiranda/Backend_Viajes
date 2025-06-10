@@ -26,6 +26,7 @@ from .services.estado_viaje_service import EstadoViajeService
 from .services.pasajero_service import PasajeroService
 from .services.metodo_pago_service import MetodoPagoService
 from .services.estatus_pasaje_service import EstatusPasajeService
+from .services.pasaje_service import PasajeService
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -472,5 +473,45 @@ class ViajeViewSet(viewsets.ModelViewSet):
 class PasajeViewSet(viewsets.ModelViewSet):
     queryset = Pasaje.objects.all()
     serializer_class = PasajeSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes     = [IsAdminRole]
+    service = PasajeService()
 
-# Create your views here.
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            pasaje = self.service.crear_pasaje(serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(pasaje).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            pasaje = self.service.actualizar_pasaje(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(pasaje).data)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        try:
+            pasaje = self.service.actualizar_pasaje(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(pasaje).data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.service.eliminar_pasaje(instance)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+

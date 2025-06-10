@@ -19,7 +19,7 @@ router.register(r'pasajeros', PasajeroViewSet, basename='pasajero')
 router.register(r'metodos-pago', MetodoPagoViewSet, basename='metodopago')
 router.register(r'estatus-pasaje', EstatusPasajeViewSet, basename='estatuspasaje')
 router.register(r'viajes', ViajeViewSet, basename='viaje')
-router.register(r'pasajes', PasajeViewSet)
+router.register(r'pasajes', PasajeViewSet, basename='pasaje')
 
 urlpatterns = [
     path('', include(router.urls)),
