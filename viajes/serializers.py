@@ -81,7 +81,14 @@ class PasajeroSerializer(serializers.ModelSerializer):
 class MetodoPagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = MetodoPago
-        fields = '__all__'
+        fields = [
+            'id',
+            'descripcion',
+            'fecha_creacion',
+            'fecha_actualizacion',
+            'estado',
+        ]
+        read_only_fields = ['fecha_creacion', 'fecha_actualizacion']
 
 class EstatusPasajeSerializer(serializers.ModelSerializer):
     class Meta:
