@@ -47,7 +47,16 @@ class DestinoSerializer(serializers.ModelSerializer):
 class VehiculoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehiculo
-        fields = '__all__'
+        fields = [
+            'id',
+            'tipo_transporte',       
+            'capacidad_asientos',   
+            'matricula',            
+            'fecha_creacion',
+            'fecha_actualizacion',
+            'estado',                
+        ]
+        read_only_fields = ['fecha_creacion', 'fecha_actualizacion']
 
 class EstadoViajeSerializer(serializers.ModelSerializer):
     class Meta:
