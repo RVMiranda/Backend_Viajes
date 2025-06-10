@@ -4,12 +4,12 @@ from .models import Rol, TipoTransporte, Usuario, Destino, Vehiculo, EstadoViaje
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rol
-        fields = '__all__'
+        fields = [ 'id', 'nombre']
 
 class TipoTransporteSerializer(serializers.ModelSerializer):
     class Meta:
         model = TipoTransporte
-        fields = '__all__'
+        fields = ['id', 'nombre','descripcion']
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:

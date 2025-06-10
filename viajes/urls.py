@@ -9,8 +9,8 @@ from .views import (
 from .views import LoginView
 
 router = DefaultRouter()
-router.register(r'roles', RolViewSet)
-router.register(r'tipos-transporte', TipoTransporteViewSet)
+router.register(r'roles', RolViewSet, basename='rol')
+router.register(r'tipos-transporte', TipoTransporteViewSet, basename='tipotransporte')
 router.register(r'usuarios', UsuarioViewSet)
 router.register(r'destinos', DestinoViewSet)
 router.register(r'vehiculos', VehiculoViewSet)

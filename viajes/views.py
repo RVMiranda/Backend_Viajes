@@ -17,6 +17,8 @@ from .authentication import TokenAuthentication
 from .permissions import IsAdminRole
 from .services.viaje_service import ViajeService
 from .utils.exceptions import BusinessError
+from .services.rol_service import RolService
+from .services.tipo_transporte_service import TipoTransporteService
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -42,10 +44,71 @@ class LoginView(APIView):
 class RolViewSet(viewsets.ModelViewSet):
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes     = [IsAdminRole]
+    service = RolService()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            rol = self.service.crear_rol(serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        out = self.get_serializer(rol)
+        return Response(out.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            rol = self.service.actualizar_rol(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(rol).data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.service.eliminar_rol(instance)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class TipoTransporteViewSet(viewsets.ModelViewSet):
     queryset = TipoTransporte.objects.all()
     serializer_class = TipoTransporteSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes     = [IsAdminRole]
+    service = TipoTransporteService()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            tipo = self.service.crear_tipo_transporte(serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(tipo).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            tipo = self.service.actualizar_tipo_transporte(instance, serializer.validated_data)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(tipo).data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.service.eliminar_tipo_transporte(instance)
+        except BusinessError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
