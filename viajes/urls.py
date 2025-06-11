@@ -6,7 +6,7 @@ from .views import (
     VehiculoViewSet, EstadoViajeViewSet, PasajeroViewSet, MetodoPagoViewSet,
     EstatusPasajeViewSet, ViajeViewSet, PasajeViewSet
 )
-from .views import LoginView
+from .views import LoginView, StatsView
 
 router = DefaultRouter()
 router.register(r'roles', RolViewSet, basename='rol')
@@ -24,4 +24,5 @@ router.register(r'pasajes', PasajeViewSet, basename='pasaje')
 urlpatterns = [
     path('', include(router.urls)),
     path('login/', LoginView.as_view(), name='login'),
+    path('stats/', StatsView.as_view(), name='stats'),
 ]

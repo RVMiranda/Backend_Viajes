@@ -7,4 +7,6 @@ class IsAdminRole(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
-        return bool(user and getattr(user.rol, "nombre", "").lower() == "administrador")
+        if not user or not hasattr(user, 'is_authenticated') or not user.is_authenticated:
+            return False
+        return getattr(user.rol, "nombre", "").lower() == "administrador"

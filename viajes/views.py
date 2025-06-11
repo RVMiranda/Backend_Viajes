@@ -6,6 +6,8 @@ from rest_framework import status, permissions
 import uuid
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models.functions import TruncMonth
+from django.db.models import Count
 # imports de archivos del proyecto
 from .models import Rol, TipoTransporte, Usuario, Destino, Vehiculo, EstadoViaje, Pasajero, MetodoPago, EstatusPasaje, Viaje, Pasaje, AuthToken
 from .serializers import (
@@ -13,6 +15,9 @@ from .serializers import (
     VehiculoSerializer, EstadoViajeSerializer, PasajeroSerializer, MetodoPagoSerializer,
     EstatusPasajeSerializer, ViajeSerializer, PasajeSerializer
 )
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .authentication import TokenAuthentication
 from .permissions import IsAdminRole
 from .services.viaje_service import ViajeService
@@ -515,3 +520,28 @@ class PasajeViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class StatsView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes     = [IsAuthenticated]
+
+    def get(self, request):
+        total_usuarios = Usuario.objects.filter(estado=True).count()
+        total_viajes   = Viaje.objects.filter(estado=True).count()
+
+        qs = Viaje.objects.filter(estado=True).annotate(
+            mes=TruncMonth('fecha_hora_salida')
+        ).values('mes').annotate(cantidad=Count('id')).order_by('mes')
+
+        viajes_por_mes = [
+            {
+                'month': v['mes'].strftime('%Y-%m'),
+                'count': v['cantidad']
+            }
+            for v in qs
+        ]
+
+        return Response({
+            'total_usuarios': total_usuarios,
+            'total_viajes': total_viajes,
+            'viajes_por_mes': viajes_por_mes,
+        })

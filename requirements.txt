@@ -3,3 +3,4 @@ requests
 mysqlclient
 djangorestframework
 python-dotenv
+django-cors-headers
