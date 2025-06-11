@@ -3,6 +3,9 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import action
+from django_filters.rest_framework import DjangoFilterBackend
 import uuid
 from django.utils import timezone
 from datetime import timedelta
@@ -129,6 +132,27 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes     = [IsAdminRole]
     service = UsuarioService()
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['nombre_usuario']
+
+    def get_permissions(self):
+        if self.action in ['create', 'lookup', 'partial_update']:
+            return [AllowAny()]
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return [IsAdminRole()]
+
+    @action(detail=False, methods=['get'], url_path='lookup')
+    def lookup(self, request):
+        nombre = request.query_params.get('nombre_usuario')
+        if not nombre:
+            return Response({'detail': 'Falta nombre_usuario'}, status=status.HTTP_400_BAD_REQUEST)
+        qs = self.get_queryset().filter(nombre_usuario__iexact=nombre)
+        if not qs.exists():
+            return Response({'detail': 'No encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        usuario = qs.first()
+        return Response(self.get_serializer(usuario).data)
 
     def retrieve(self, request, *args, **kwargs):
         usuario = self.get_object()
