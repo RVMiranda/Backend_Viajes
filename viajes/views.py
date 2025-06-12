@@ -335,8 +335,12 @@ class PasajeroViewSet(viewsets.ModelViewSet):
     queryset = Pasajero.objects.all()
     serializer_class = PasajeroSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes     = [IsAdminRole]
     service = PasajeroService()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve', 'create']:  # permitir a usuarios autenticados crear pasajero
+            return [IsAuthenticated()]
+        return [IsAdminRole()]  # admin para update/destroy
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
