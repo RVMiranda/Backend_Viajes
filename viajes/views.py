@@ -422,8 +422,12 @@ class EstatusPasajeViewSet(viewsets.ModelViewSet):
     queryset = EstatusPasaje.objects.all()
     serializer_class = EstatusPasajeSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes     = [IsAdminRole]
     service = EstatusPasajeService()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:  # permitir a usuarios autenticados ver estatus
+            return [IsAuthenticated()]
+        return [IsAdminRole()]  # solo admin puede crear/editar/eliminar
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
