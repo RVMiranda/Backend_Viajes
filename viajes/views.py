@@ -379,8 +379,13 @@ class MetodoPagoViewSet(viewsets.ModelViewSet):
     queryset = MetodoPago.objects.all()
     serializer_class = MetodoPagoSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes     = [IsAdminRole]
     service = MetodoPagoService()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]  
+        return [IsAdminRole()]          
+
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

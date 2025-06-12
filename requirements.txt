@@ -5,3 +5,4 @@ djangorestframework
 python-dotenv
 django-cors-headers
 django-filter
+dotenv
