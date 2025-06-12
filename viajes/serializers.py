@@ -103,18 +103,40 @@ class EstatusPasajeSerializer(serializers.ModelSerializer):
         read_only_fields = ['fecha_creacion', 'fecha_actualizacion']
 
 class ViajeSerializer(serializers.ModelSerializer):
+    origen = DestinoSerializer(read_only=True)
+    destino = DestinoSerializer(read_only=True)
+    vehiculo = VehiculoSerializer(read_only=True)
+    estado_viaje = EstadoViajeSerializer(read_only=True)
+
+    origen_id = serializers.PrimaryKeyRelatedField(
+        queryset=Destino.objects.all(), source='origen', write_only=True
+    )
+    destino_id = serializers.PrimaryKeyRelatedField(
+        queryset=Destino.objects.all(), source='destino', write_only=True
+    )
+    vehiculo_id = serializers.PrimaryKeyRelatedField(
+        queryset=Vehiculo.objects.all(), source='vehiculo', write_only=True
+    )
+    estado_viaje_id = serializers.PrimaryKeyRelatedField(
+        queryset=EstadoViaje.objects.all(), source='estado_viaje', write_only=True
+    )
+
     class Meta:
         model = Viaje
         fields = [
             'id',
-            'origen',
-            'destino',
-            'vehiculo',
+            'origen', 'origen_id',
+            'destino', 'destino_id',
+            'vehiculo', 'vehiculo_id',
             'fecha_hora_salida',
             'fecha_hora_llegada',
             'precio_base',
-            'estado_viaje',
+            'estado_viaje', 'estado_viaje_id',
+            'fecha_creacion',
+            'fecha_actualizacion',
+            'estado',
         ]
+        read_only_fields = ['fecha_creacion', 'fecha_actualizacion']
 
 class PasajeSerializer(serializers.ModelSerializer):
     class Meta:

@@ -96,8 +96,12 @@ class TipoTransporteViewSet(viewsets.ModelViewSet):
     queryset = TipoTransporte.objects.all()
     serializer_class = TipoTransporteSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes     = [IsAdminRole]
     service = TipoTransporteService()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return [IsAdminRole()]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -200,8 +204,12 @@ class DestinoViewSet(viewsets.ModelViewSet):
     queryset = Destino.objects.all()
     serializer_class = DestinoSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes     = [IsAdminRole]
     service = DestinoService()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return [IsAdminRole()]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -288,8 +296,12 @@ class EstadoViajeViewSet(viewsets.ModelViewSet):
     queryset = EstadoViaje.objects.all()
     serializer_class = EstadoViajeSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes     = [IsAdminRole]
     service = EstadoViajeService()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return [IsAdminRole()]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -433,11 +445,15 @@ class EstatusPasajeViewSet(viewsets.ModelViewSet):
 
 
 class ViajeViewSet(viewsets.ModelViewSet):
-    queryset = Viaje.objects.all()
+    queryset = ViajeService().listar_activos()
     serializer_class = ViajeSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminRole]
     service = ViajeService()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return [IsAdminRole()]
 
     def list(self, request):
         viajes = self.service.listar_activos()
@@ -503,10 +519,15 @@ class PasajeViewSet(viewsets.ModelViewSet):
     queryset = Pasaje.objects.all()
     serializer_class = PasajeSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes     = [IsAdminRole]
     service = PasajeService()
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve', 'create']:
+            return [IsAuthenticated()]
+        return [IsAdminRole()]
+
     def create(self, request, *args, **kwargs):
+        data = {**request.data, 'usuario_compra': request.user.id}
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
